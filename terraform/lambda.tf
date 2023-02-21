@@ -1,6 +1,5 @@
 provider "aws" {
-  region  = "us-east-1"
-  profile = "nacho"
+  region = "us-east-1"
 }
 
 resource "aws_lambda_function" "example" {
