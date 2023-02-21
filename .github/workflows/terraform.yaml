@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: us-east-1
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
     defaults:
       run:
         working-directory: terraform
