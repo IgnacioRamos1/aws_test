@@ -9,12 +9,12 @@ jobs:
   terraform:
     name: "Terraform"
     runs-on: ubuntu-latest
-    env:
-      AWS_REGION: us-east-1
     permissions:
       id-token: write
       contents: read
       pull-requests: write
+    env:
+      AWS_REGION: us-east-1
     defaults:
       run:
         working-directory: terraform
