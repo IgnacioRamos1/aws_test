@@ -6,9 +6,9 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "nachotestserverless"
-    region = "us-east-1"
-    key    = "terraform.tfstate"
+    bucket  = "nachotestserverless"
+    region  = "us-east-1"
+    key     = "terraform.tfstate"
     profile = "nacho"
   }
 }
