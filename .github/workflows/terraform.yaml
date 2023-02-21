@@ -4,10 +4,11 @@ on:
  push:
    branches:
    - main
+
  pull_request:
    branches:
    - main
- 
+
 env:
  # verbosity setting for Terraform logs
  TF_LOG: INFO
@@ -38,7 +39,7 @@ jobs:
     
      - name: Terraform init
        id: init
-       run: terraform init -backend-config="bucket=$BUCKET_TF_STATE"
+       run: terraform init -backend-config="bucket=$BUCKET_TF_STATE" -backend-config= "access_key=$AWS_ACCESS_KEY_ID" -backend-config= "secret_key=$AWS_SECRET_ACCESS_KEY"
  
      - name: Terraform format
        id: fmt
