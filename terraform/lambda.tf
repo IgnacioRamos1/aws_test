@@ -1,10 +1,9 @@
 provider "aws" {
   region  = "us-east-1"
-  profile = "nacho"
 }
 
 resource "aws_lambda_function" "example" {
-  function_name = "ServerlessExample2"
+  function_name = "ServerlessExample"
 
   # The bucket name as created earlier with "aws s3api create-bucket"
   s3_bucket = "nachotestserverless"
