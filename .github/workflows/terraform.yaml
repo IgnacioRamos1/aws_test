@@ -15,14 +15,14 @@ jobs:
       pull-requests: write
     steps:
       - name: Paso 1
-        run: echo "flag=true" >> $GITHUB_ENV
+        run: echo "flag=false" >> $GITHUB_ENV
       - name: Paso 2
-        run: echo 'flag2=false' >> $GITHUB_ENV
+        run: echo 'flag=true' >> $GITHUB_ENV
       - name: Paso 3
         if: ${{ env.flag == 'true' }}
         run: echo "demtro3"
       - name: Paso 4
-        if: ${{ env.flag2 == 'true' }}
+        if: ${{ env.flag2 == 'false' }}
         run: echo "dentro4"
 
 
@@ -33,6 +33,7 @@ jobs:
       - name: Verify Changed Files
         id: verify-changed-files
         run: |
+          echo 'flag=false' >> $GITHUB_ENV
           git checkout
           files_changed=false
           for d in lambdas/*/ ; do
@@ -44,7 +45,7 @@ jobs:
               cd $d
               go build -o ../../builds/$(basename $d)
               cd ../..
-              true >> $GITHUB_OUTPUT
+              echo "flag=true" >> $GITHUB_ENV
               files_changed=true
             fi
           done
@@ -55,7 +56,7 @@ jobs:
       # CAMBIAR EL .JS POR .GO
 
       - name: Zip Lambda
-        if: steps.verify-changed-files.outputs.files_changed == true
+        if: ${{ env.flag == 'true' }}
         run: |
           cd ..
           # Get the path of the modified files
