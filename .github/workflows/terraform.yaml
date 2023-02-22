@@ -43,7 +43,7 @@ jobs:
       - name: Verify Changed Files
         id: verify-changed-files
         run: |
-          echo ls
+          ls
           for d in lambdas/*/ ; do
             if git diff --quiet HEAD^ HEAD -- $d; then
               echo "Skipping unchanged lambda $d"
