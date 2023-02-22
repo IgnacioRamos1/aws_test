@@ -1,14 +1,9 @@
 name: "Terraform"
 
 on:
-  # pull request to main or develop branch
   # bloquear las branches de main y develop para que no se puedan pushear directamente
-  push:
-    branches:
-      - main
   pull_request:
-
-# agregar pull request linda del repo (chrome)
+    branches: [ main, develop ]
 
 jobs:
   terraform:
@@ -41,13 +36,25 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       
-      # ir carpeta por carpeta de cada lambda y zipearla y guardarlos en una carpeta builds
-      # luego subir esa carpeta a s3
+      - name: Check for modified lambdas
+        id: check_changes
+        run: |
+          CHANGES=$(git diff --name-only HEAD^ HEAD)
+          echo "::set-output name=changes::$CHANGES"
 
-      # IDEALMENTE
-      # detect modified files
-      # create zip for that folder 
-      # upload zip to s3
+      - name: Zip Lambda function
+        if: ${{ contains(steps.check_changes.outputs.changes, 'lambdas/') }}
+        id: zip_lambda
+        run: |
+          LAMBDA_PATH=$(git diff --name-only HEAD^ HEAD | grep lambdas/ | head -1)
+          LAMBDA_NAME=$(basename "$LAMBDA_PATH" .py)
+          echo "Lambda function $LAMBDA_NAME has been modified"
+          zip -r "$LAMBDA_NAME.zip" "$LAMBDA_PATH"
+
+      - name: Upload zip file to S3
+        if: steps.zip_lambda.result == 'success'
+        run: |
+          aws s3 cp "${{ steps.zip_lambda.outputs.lambda_name }}.zip" "s3://${{ github.ref == 'refs/heads/main' && 'olgaproduction' || 'olgadevelop' }}-my-bucket/${{ steps.zip_lambda.outputs.lambda_name }}.zip"
 
       - name: Terraform Format
         id: fmt
