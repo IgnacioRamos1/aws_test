@@ -35,11 +35,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
-
 
       - name: Check branch name
         id: branch-check
@@ -78,15 +73,17 @@ jobs:
         uses: jakejarvis/s3-sync-action@v0.5.0
         with:
           args: --delete
-          source_dir: ./
-          bucket_url: s3://${
-            if eq(steps.branch-check.outputs.branch, 'main')
-            then 'olgaproduction'
-            else if eq(steps.branch-check.outputs.branch, 'develop')
-            then 'olgadevelop'
-            else error('Invalid branch name')}
+          entryPoint: sh
+          env:
+            BUCKET_URL: s3://${
+              if eq(steps.branch-check.outputs.branch, 'main')
+              then 'olgaproduction'
+              else if eq(steps.branch-check.outputs.branch, 'develop')
+              then 'olgadevelop'
+              else error('Invalid branch name')}
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
       
       - name: Terraform Format
         id: fmt
