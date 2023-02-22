@@ -74,7 +74,7 @@ jobs:
         # CAMBIAR LOS NOMBRES DE LOS BUCKETS DE S3 Y LA REGION
       - name: Upload to S3
         uses: keithweaver/aws-s3-github-action@v1.0.0
-        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        if: ${{ env.flag == 'true' }}
         with:
           command: cp
           source: builds/*
