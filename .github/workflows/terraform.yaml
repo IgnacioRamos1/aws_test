@@ -1,4 +1,4 @@
-name: "Terraform"
+name: 'Terraform'
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build_go:
-    name: "Build Go Files Zip"
+    name: 'Build Go Files Zip'
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -33,28 +33,8 @@ jobs:
               go build -o ../../builds/$(basename $d)
               cd ../..            
             fi
-          echo "$GITHUB_ENV"
           done
 
-      - name: Zip Lambda
-        if: ${{ env.flag == 'true' }}
-        run: |
-          cd ..
-          # Get the path of the modified files
-          CHANGED_FILES=$(echo "${{ steps.verify-changed-files.outputs.changed_files }}")
-          # Loop through each modified file and zip its directory
-          for file in $CHANGED_FILES; do
-            # Get the directory of the modified file
-            CHANGED_DIR=$(dirname "$file")
-            # Zip the directory of the modified file and store in the "builds" directory
-            if [ ! -d "builds" ]; then
-              mkdir -p builds
-            fi
-            cd "${CHANGED_DIR}"
-            zip -r "../../builds/${CHANGED_DIR}.zip" .
-            cd ..
-          done
-      
       - name: Upload Builds Artifact
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         uses: actions/upload-artifact@v2
@@ -62,10 +42,8 @@ jobs:
           name: builds
           path: builds/
 
-
-
   aws:
-    name: "AWS"
+    name: 'AWS'
     runs-on: ubuntu-latest
     needs: build_go
     permissions:
@@ -80,7 +58,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: builds
-      
+
       - name: Check branch name
         id: branch-check
         run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
@@ -105,9 +83,8 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-1
 
-
   terraform:
-    name: "Terraform"
+    name: 'Terraform'
     runs-on: ubuntu-latest
     needs: aws
     permissions:
