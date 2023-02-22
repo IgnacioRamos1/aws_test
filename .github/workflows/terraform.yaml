@@ -21,25 +21,18 @@ jobs:
         run: |
           echo 'flag=false' >> $GITHUB_ENV
           git checkout
-          files_changed=false
           for d in lambdas/*/ ; do
             if git diff --quiet HEAD^ HEAD -- $d; then
               echo "Skipping unchanged lambda $d"
-              false >> $GITHUB_OUTPUT
             else
+              echo "flag=true" >> $GITHUB_ENV
               echo "Building changed lambda $d"
               cd $d
               go build -o ../../builds/$(basename $d)
-              cd ../..
-              
-              files_changed=true
+              cd ../..            
             fi
+          echo env.flag || $flag
           done
-          echo "::set-output name=files_changed::$files_changed"
-        shell: bash
-        env:
-          GITHUB_ENV: ${{github.action_path}}/.env
-      # CAMBIAR EL .JS POR .GO
 
       - name: Zip Lambda
         if: ${{ env.flag == 'true' }}
