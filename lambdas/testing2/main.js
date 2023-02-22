@@ -6,7 +6,7 @@ exports.handler = function (event, context, callback) {
         headers: {
             'Content-Type': 'text/html; charset=utf-8',
         },
-        body: "Modified Lambda function!",
+        body: "Modified Lambda function 2!",
     };
     callback(null, response);
 };
