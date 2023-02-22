@@ -67,7 +67,8 @@ jobs:
           name: builds
       - shell: bash
         run: |
-          mv *.zip builds/.
+          ls
+          mv *.zip builds/
           echo "flag=true" >> $GITHUB_ENV
 
       - name: Check branch name
