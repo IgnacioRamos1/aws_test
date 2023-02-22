@@ -58,7 +58,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: builds
-        run: echo "flag=true" >> $GITHUB_ENV
 
       - name: Check branch name
         id: branch-check
@@ -75,7 +74,7 @@ jobs:
         # CAMBIAR LOS NOMBRES DE LOS BUCKETS DE S3 Y LA REGION
       - name: Upload to S3
         uses: keithweaver/aws-s3-github-action@v1.0.0
-        if: ${{ env.flag == 'true' }}
+        if: ${{ ls builds | wc -l > 0 }}
         with:
           command: cp
           source: builds/*
