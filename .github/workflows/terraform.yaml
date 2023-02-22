@@ -43,7 +43,7 @@ jobs:
       - name: Verify Changed Files
         id: verify-changed-files
         run: |
-          changed_files=$(git diff --name-only HEAD^ HEAD)
+          changed_files=$(git diff --name-only HEAD~1 HEAD)
           echo "Changed files: $changed_files"
           if echo "$changed_files" | grep -qE "lambdas/.+\.js$"; then
             echo "::set-output name=files_changed::true"
