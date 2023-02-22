@@ -24,13 +24,13 @@ jobs:
           for d in lambdas/*/ ; do
             if git diff --quiet HEAD^ HEAD -- $d; then
               echo "Skipping unchanged lambda $d"
-              echo "false" >> $GITHUB_OUTPUT
+              echo "false" >> $GITHUB_ENV
             else
               echo "Building changed lambda $d"
               cd $d
               go build -o ../../builds/$(basename $d)
               cd ../..
-              echo "true" >> $GITHUB_OUTPUT
+              echo "true" >> $GITHUB_ENV
             fi
           done
         shell: bash
