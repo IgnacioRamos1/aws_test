@@ -15,7 +15,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Paso 1
-        run: echo "ESTADO=true" >> $GITHUB_ENV
+        run: echo "ESTADO1=true" >> $GITHUB_ENV
       - name: Paso 2
         run: echo "ESTADO2=false" >> $GITHUB_ENV
       - name: Paso 3
