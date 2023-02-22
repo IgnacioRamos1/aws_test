@@ -73,17 +73,10 @@ jobs:
         uses: jakejarvis/s3-sync-action@v0.5.0
         with:
           args: --delete
-          entryPoint: sh
-          env:
-            BUCKET_URL: s3://${
-              if eq(steps.branch-check.outputs.branch, 'main')
-              then 'olgaproduction'
-              else if eq(steps.branch-check.outputs.branch, 'develop')
-              then 'olgadevelop'
-              else error('Invalid branch name')}
+          source_dir: ./
+          bucket_url: s3://${{ if eq(steps.branch-check.outputs.branch, 'main') }}olgaproduction${{ else if eq(steps.branch-check.outputs.branch, 'develop') }}olgadevelop${{ else }}error('Invalid branch name')${{ endif }}
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
       
       - name: Terraform Format
         id: fmt
