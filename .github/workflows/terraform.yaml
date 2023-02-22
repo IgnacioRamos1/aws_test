@@ -89,7 +89,7 @@ jobs:
         if: ${{ env.flag == 'true' }}
         with:
           command: cp
-          source: builds/*
+          source: builds/
           destination: s3://${{ steps.branch-check.outputs.branch == 'main' && 'olgaproduction' || steps.branch-check.outputs.branch == 'develop' && 'olgadevelop' || 'Invalid branch name' }}/builds/
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
