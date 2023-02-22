@@ -1,9 +1,14 @@
 name: "Terraform"
 
 on:
+  # pull request to main or develop branch
+  # bloquear las branches de main y develop para que no se puedan pushear directamente
   push:
     branches:
       - main
+  pull_request:
+
+# agregar pull request linda del repo (chrome)
 
 jobs:
   terraform:
@@ -28,20 +33,21 @@ jobs:
           terraform_version: 1.3.9
           terraform_wrapper: false
 
-      - name: Check Environment Variables
-        run: env
-      
-      - name: Check Access Keys
-        run: |
-          echo "AWS_ACCESS_KEY_ID = ${{ secrets.AWS_ACCESS_KEY_ID }}"
-          echo "AWS_SECRET_ACCESS_KEY = ${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-
       - name: Setup AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
+          # crear rol para olga y trabajar con ese rol
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+      
+      # ir carpeta por carpeta de cada lambda y zipearla y guardarlos en una carpeta builds
+      # luego subir esa carpeta a s3
+
+      # IDEALMENTE
+      # detect modified files
+      # create zip for that folder 
+      # upload zip to s3
 
       - name: Terraform Format
         id: fmt
@@ -49,7 +55,7 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init -backend-config="bucket"="nachotestserverless"
+        run: terraform init -no-color
 
       - name: Terraform Validate
         id: validate
@@ -59,7 +65,35 @@ jobs:
         id: plan
         run: terraform plan -no-color
 
+      - uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            <details><summary>Validation Output</summary>
+            \`\`\`\n
+            ${{ steps.validate.outputs.stdout }}
+            \`\`\`
+            </details>
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            <details><summary>Show Plan</summary>
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+            </details>
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
-
