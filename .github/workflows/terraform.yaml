@@ -17,7 +17,7 @@ jobs:
       - name: Paso 1
         run: echo "flag=hola" >> $GITHUB_ENV
       - name: Paso 2
-        run: echo 'flag2=adios' >> $GITHUB_ENV
+        run: echo 'flag2=perro' >> $GITHUB_ENV
       - name: Paso 3
         if: env.flag
         run: echo "dentro3"
