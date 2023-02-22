@@ -15,14 +15,14 @@ jobs:
       pull-requests: write
     steps:
       - name: Paso 1
-        run: echo "flag=\"true\"" >> $GITHUB_ENV
+        run: echo "flag=true" >> $GITHUB_ENV
       - name: Paso 2
-        run: echo "flag2=\"false\"" >> $GITHUB_ENV
+        run: echo "flag2=false" >> $GITHUB_ENV
       - name: Paso 3
-        if: ${{ env.flag == "true" }}
+        if: env.flag == true
         run: echo "dentro3"
       - name: Paso 4
-        if: ${{ env.flag2 == "true" }}
+        if: env.flag2 == true
         run: echo "dentro4"
 
 
