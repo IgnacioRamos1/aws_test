@@ -22,8 +22,9 @@ jobs:
         if: ${{ env.ESTADO1 == true }}
         run: echo "El valor de estado1 es true, por lo que se ejecuta este paso"
       - name: Paso 4
-        if: ${{ env.ESTADO2 == 'true' }}
-        run: echo "El valor de output2 es flase, por lo que no se ejecuta este paso"
+        if: ${{ env.ESTADO2 == false }}
+        run: echo "El valor de estado2 es false, por lo que se ejecuta este paso"
+
       - name: Checkout
         uses: actions/checkout@v2
 
