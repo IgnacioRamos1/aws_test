@@ -70,20 +70,14 @@ jobs:
 
       # CAMBIAR LOS NOMBRES DE LOS BUCKETS DE S3
       - name: Upload to S3
-        uses: jakejarvis/s3-sync-action@v0.5.0
+        uses: keithweaver/aws-s3-github-action@v1.0.0
         with:
-          args: --delete
-          source_dir: ./
-          bucket_url: |
-            s3://${{ if eq(steps.branch-check.outputs.branch, 'main') }}
-              olgaproduction
-            ${{ else if eq(steps.branch-check.outputs.branch, 'develop') }}
-              olgadevelop
-            ${{ else }}
-              Invalid branch name
-            ${{ endif }}
+          command: cp
+          source: ./local_file.txt
+          destination: s3://${{ steps.branch-check.outputs.branch == 'main' && 'olgaproduction' || steps.branch-check.outputs.branch == 'develop' && 'olgadevelop' || 'Invalid branch name' }}/local_file.txt
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
 
       - name: Terraform Format
         id: fmt
