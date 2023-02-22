@@ -43,15 +43,16 @@ jobs:
       - name: Verify Changed Files
         id: verify-changed-files
         run: |
-          changed_files=$(git diff --name-only HEAD)
-          if echo "$changed_files" | grep -qE "lambdas/.+\.js$"; then
-            echo "files_changed=true" >> $GITHUB_ENV
-            changed_files=$(echo "$changed_files" | grep -E "lambdas/.+\.js$")
-            echo "Changed JavaScript files: $changed_files"
-            echo "changed_files=$changed_files" >> $GITHUB_ENV
-          else
-            echo "files_changed=false" >> $GITHUB_ENV
-          fi
+          for d in lambdas/*/ ; do
+            if git diff --quiet HEAD^ HEAD -- $d; then
+              echo "Skipping unchanged lambda $d"
+            else
+              echo "Building changed lambda $d"
+              cd $d
+              go build -o ../../builds/$(basename $d)
+              cd ../..
+            fi
+          done
       # CAMBIAR EL .JS POR .GO
 
       - name: Zip Lambda
