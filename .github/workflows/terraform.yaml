@@ -46,12 +46,12 @@ jobs:
           changed_files=$(git diff --name-only ${{ env.branch }} HEAD)
           echo "Changed files: $changed_files"
           if echo "$changed_files" | grep -qE "lambdas/.+\.js$"; then
-            echo "::set-output name=files_changed::true"
+            echo "files_changed=true" >> $GITHUB_ENV
             changed_files=$(echo "$changed_files" | grep -E "lambdas/.+\.js$")
             echo "Changed JavaScript files: $changed_files"
-            echo "::set-output name=changed_files::$changed_files"
+            echo "changed_files=$changed_files" >> $GITHUB_ENV
           else
-            echo "::set-output name=files_changed::false"
+            echo "files_changed=false" >> $GITHUB_ENV
           fi
 
       # CAMBIAR EL .JS POR .GO
