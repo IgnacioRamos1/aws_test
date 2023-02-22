@@ -14,6 +14,16 @@ jobs:
       contents: read
       pull-requests: write
     steps:
+      - name: Paso 1
+        run: echo "::set-output name=test::true"
+      - name: Paso 2
+        run: echo "::set-output name=test::false"
+      - name: Paso 3
+        if: ${{ steps.paso1.outputs.output1 == 'true' }}
+        run: echo "El valor de output1 es true, por lo que se ejecuta este paso"
+      - name: Paso 4
+        if: ${{ steps.paso1.outputs.output2 == 'true' }}
+        run: echo "El valor de output2 es flase, por lo que no se ejecuta este paso"
       - name: Checkout
         uses: actions/checkout@v2
 
