@@ -1,14 +1,8 @@
 name: "Terraform"
 
 on:
-  # pull request to main or develop branch
-  # bloquear las branches de main y develop para que no se puedan pushear directamente
-  push:
-    branches:
-      - main
   pull_request:
-
-# agregar pull request linda del repo (chrome)
+    branches: [ main, develop ]
 
 jobs:
   terraform:
@@ -40,14 +34,23 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      
-      # ir carpeta por carpeta de cada lambda y zipearla y guardarlos en una carpeta builds
-      # luego subir esa carpeta a s3
 
-      # IDEALMENTE
-      # detect modified files
-      # create zip for that folder 
-      # upload zip to s3
+      - name: Check Lambda files
+        run: |
+          if git diff HEAD^ HEAD --name-only | grep -q "^lambdas/.*\.js$"; then
+              echo "Detected modified lambda file. Zipping folder."
+              cd lambdas
+              lambda_file=$(git diff HEAD^ HEAD --name-only | grep "^lambdas/.*\.js$" | head -1)
+              zip_file="${lambda_file%.js}.zip"
+              if [[ -f "../builds/$zip_file" ]]; then
+                  echo "Deleting existing zip file: $zip_file"
+                  rm "../builds/$zip_file"
+              fi
+              zip -r "../builds/$zip_file" .
+              cd ..
+          else
+              echo "No modified lambda files detected."
+          fi
 
       - name: Terraform Format
         id: fmt
@@ -65,7 +68,8 @@ jobs:
         id: plan
         run: terraform plan -no-color
 
-      - uses: actions/github-script@v6
+      - name: Terraform Plan Comment
+        uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
@@ -97,3 +101,4 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
+
