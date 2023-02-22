@@ -57,25 +57,27 @@ jobs:
       # CAMBIAR EL .JS POR .GO
 
       - name: Zip Lambda
-        if: steps.verify-changed-files.outputs.files_changed == 'true'
-        run: |
-          # Get the path of the modified files
-          CHANGED_FILES=$(echo "${{ steps.verify-changed-files.outputs.changed_files }}")
-          # Loop through each modified file and zip its directory
-          for file in $CHANGED_FILES; do
-            # Get the directory of the modified file
-            CHANGED_DIR=$(dirname "$file")
-            # Zip the directory of the modified file and store in the "builds" directory
+      if: steps.verify-changed-files.outputs.files_changed == 'true'
+      run: |
+        # Get the path of the modified files
+        CHANGED_FILES=$(echo "${{ steps.verify-changed-files.outputs.changed_files }}")
+        # Loop through each modified file and zip its directory
+        for file in $CHANGED_FILES; do
+          # Get the directory of the modified file
+          CHANGED_DIR=$(dirname "$file")
+          # Zip the directory of the modified file and store in the "builds" directory
+          if [ ! -d "builds" ]; then
             mkdir -p builds
-            cd "${CHANGED_DIR}"
-            zip -r "../../builds/${CHANGED_DIR}.zip" .
-            cd ..
-          done
+          fi
+          cd "${CHANGED_DIR}"
+          zip -r "../../builds/${CHANGED_DIR}.zip" .
+          cd ..
+        done
 
       # CAMBIAR LOS NOMBRES DE LOS BUCKETS DE S3 Y LA REGION
       - name: Upload to S3
         uses: keithweaver/aws-s3-github-action@v1.0.0
-        if: ${{ success() && steps.modified-files.outputs.modified == 'true' }}
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
         with:
           command: cp
           source: builds/*
