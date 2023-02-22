@@ -1,9 +1,10 @@
 package main
 
 import (
-        "fmt"
-        "context"
-        "github.com/aws/aws-lambda-go/lambda"
+	"context"
+	"fmt"
+
+	"github.com/aws/aws-lambda-go/lambda"
 )
 
 type MyEvent struct {
