@@ -15,14 +15,14 @@ jobs:
       pull-requests: write
     steps:
       - name: Paso 1
-        run: echo "ESTADO1=true" >> $GITHUB_ENV
+        run: echo "flag=true" >> $GITHUB_ENV
       - name: Paso 2
-        run: echo "ESTADO2=false" >> $GITHUB_ENV
+        run: echo "flag2=false" >> $GITHUB_ENV
       - name: Paso 3
-        if: ${{ env.ESTADO1 == true }}
+        if: env.flag
         run: echo "El valor de estado1 es true, por lo que se ejecuta este paso"
       - name: Paso 4
-        if: ${{ env.ESTADO2 == false }}
+        if: env.flag2
         run: echo "El valor de estado2 es false, por lo que se ejecuta este paso"
 
       - name: Checkout
