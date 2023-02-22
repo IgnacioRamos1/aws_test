@@ -40,6 +40,7 @@ jobs:
           cd builds
           for f in *; do
             zip -r $f.zip $f
+            rm -rf $f
           done
           cd ..
       - name: Upload Builds Artifact
@@ -67,7 +68,7 @@ jobs:
           name: builds
       - shell: bash
         run: |
-          ls
+          mkdir -p builds
           mv *.zip builds/
           echo "flag=true" >> $GITHUB_ENV
 
