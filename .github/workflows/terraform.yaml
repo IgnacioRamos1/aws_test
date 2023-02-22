@@ -15,14 +15,14 @@ jobs:
       pull-requests: write
     steps:
       - name: Paso 1
-        run: echo "::set-output name=test::true"
+        run: echo "ESTADO=true" >> $GITHUB_ENV
       - name: Paso 2
-        run: echo "::set-output name=test::false"
+        run: echo "ESTADO2=false" >> $GITHUB_ENV
       - name: Paso 3
-        if: ${{ steps.paso1.outputs.output1 == 'true' }}
-        run: echo "El valor de output1 es true, por lo que se ejecuta este paso"
+        if: ${{ env.ESTADO1 == true }}
+        run: echo "El valor de estado1 es true, por lo que se ejecuta este paso"
       - name: Paso 4
-        if: ${{ steps.paso1.outputs.output2 == 'true' }}
+        if: ${{ env.ESTADO2 == 'true' }}
         run: echo "El valor de output2 es flase, por lo que no se ejecuta este paso"
       - name: Checkout
         uses: actions/checkout@v2
