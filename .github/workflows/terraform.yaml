@@ -59,22 +59,27 @@ jobs:
       - name: Zip Lambda
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         run: |
-          # Get the path of the modified file
-          CHANGED_FILE=$(echo "${{ steps.verify-changed-files.outputs.changed_files }}" | head -n 1)
-          # Get the directory of the modified file
-          CHANGED_DIR=$(dirname "${CHANGED_FILE}")
-          # Zip the directory of the modified file
-          cd "${CHANGED_DIR}"
-          zip -r "../${CHANGED_DIR}.zip" .
-          cd ..
+          # Get the path of the modified files
+          CHANGED_FILES=$(echo "${{ steps.verify-changed-files.outputs.changed_files }}")
+          # Loop through each modified file and zip its directory
+          for file in $CHANGED_FILES; do
+            # Get the directory of the modified file
+            CHANGED_DIR=$(dirname "$file")
+            # Zip the directory of the modified file and store in the "builds" directory
+            mkdir -p builds
+            cd "${CHANGED_DIR}"
+            zip -r "../../builds/${CHANGED_DIR}.zip" .
+            cd ..
+          done
 
-      # CAMBIAR LOS NOMBRES DE LOS BUCKETS DE S3
+      # CAMBIAR LOS NOMBRES DE LOS BUCKETS DE S3 Y LA REGION
       - name: Upload to S3
         uses: keithweaver/aws-s3-github-action@v1.0.0
+        if: ${{ success() && steps.modified-files.outputs.modified == 'true' }}
         with:
           command: cp
-          source: ./local_file.txt
-          destination: s3://${{ steps.branch-check.outputs.branch == 'main' && 'olgaproduction' || steps.branch-check.outputs.branch == 'develop' && 'olgadevelop' || 'Invalid branch name' }}/local_file.txt
+          source: builds/*
+          destination: s3://${{ steps.branch-check.outputs.branch == 'main' && 'olgaproduction' || steps.branch-check.outputs.branch == 'develop' && 'olgadevelop' || 'Invalid branch name' }}/builds/
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-1
