@@ -17,12 +17,12 @@ jobs:
       - name: Paso 1
         run: echo "flag=hola" >> $GITHUB_ENV
       - name: Paso 2
-        run: echo "flag2=false" >> $GITHUB_ENV
+        run: echo 'flag2=adios' >> $GITHUB_ENV
       - name: Paso 3
         if: env.flag
         run: echo "dentro3"
       - name: Paso 4
-        if: ${{ env.flag2 == "adios" }}
+        if: ${{ env.flag2 == 'adios' }}
         run: echo "dentro4"
 
 
