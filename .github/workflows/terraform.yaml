@@ -41,11 +41,19 @@ jobs:
         run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
 
       - name: Verify Changed Files
-        uses: tj-actions/verify-changed-files@v13
         id: verify-changed-files
-        with:
-          files: |
-            lambdas/**/*.js
+        run: |
+          changed_files=$(git diff --name-only HEAD^ HEAD)
+          echo "Changed files: $changed_files"
+          if echo "$changed_files" | grep -qE "lambdas/.+\.js$"; then
+            echo "::set-output name=files_changed::true"
+            changed_files=$(echo "$changed_files" | grep -E "lambdas/.+\.js$")
+            echo "Changed JavaScript files: $changed_files"
+            echo "::set-output name=changed_files::$changed_files"
+          else
+            echo "::set-output name=files_changed::false"
+          fi
+
       # CAMBIAR EL .JS POR .GO
 
       - name: Zip Lambda
