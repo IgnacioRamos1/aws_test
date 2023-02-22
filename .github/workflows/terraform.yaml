@@ -98,7 +98,7 @@ jobs:
               body: output
             })
 
+      # modificar el apply para que aplique en develop o main
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
-
