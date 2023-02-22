@@ -19,11 +19,12 @@ jobs:
       - name: Paso 2
         run: echo "flag2=false" >> $GITHUB_ENV
       - name: Paso 3
-        if: env.flag == true
+        if: env.flag
         run: echo "dentro3"
       - name: Paso 4
-        if: env.flag2 == true
+        if: env.flag2
         run: echo "dentro4"
+
 
 
       - name: Checkout
