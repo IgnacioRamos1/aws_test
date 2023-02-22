@@ -42,7 +42,7 @@ jobs:
       # CAMBIAR EL .JS POR .GO
 
       - name: Zip Lambda
-        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        if: steps.verify-changed-files.outputs.files_changed == true
         run: |
           cd ..
           # Get the path of the modified files
