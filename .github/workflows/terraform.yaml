@@ -1,7 +1,6 @@
 name: "Terraform"
 
 on:
-  # bloquear las branches de main y develop para que no se puedan pushear directamente
   pull_request:
     branches: [ main, develop ]
 
@@ -35,26 +34,23 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      
-      - name: Check for modified lambdas
-        id: check_changes
-        run: |
-          CHANGES=$(git diff --name-only HEAD^ HEAD)
-          echo "::set-output name=changes::$CHANGES"
 
-      - name: Zip Lambda function
-        if: ${{ contains(steps.check_changes.outputs.changes, 'lambdas/') }}
-        id: zip_lambda
+      - name: Check Lambda files
         run: |
-          LAMBDA_PATH=$(git diff --name-only HEAD^ HEAD | grep lambdas/ | head -1)
-          LAMBDA_NAME=$(basename "$LAMBDA_PATH" .py)
-          echo "Lambda function $LAMBDA_NAME has been modified"
-          zip -r "$LAMBDA_NAME.zip" "$LAMBDA_PATH"
-
-      - name: Upload zip file to S3
-        if: steps.zip_lambda.result == 'success'
-        run: |
-          aws s3 cp "${{ steps.zip_lambda.outputs.lambda_name }}.zip" "s3://${{ github.ref == 'refs/heads/main' && 'olgaproduction' || 'olgadevelop' }}-my-bucket/${{ steps.zip_lambda.outputs.lambda_name }}.zip"
+          if git diff HEAD^ HEAD --name-only | grep -q "^lambdas/.*\.js$"; then
+              echo "Detected modified lambda file. Zipping folder."
+              cd lambdas
+              lambda_file=$(git diff HEAD^ HEAD --name-only | grep "^lambdas/.*\.js$" | head -1)
+              zip_file="${lambda_file%.js}.zip"
+              if [[ -f "../builds/$zip_file" ]]; then
+                  echo "Deleting existing zip file: $zip_file"
+                  rm "../builds/$zip_file"
+              fi
+              zip -r "../builds/$zip_file" .
+              cd ..
+          else
+              echo "No modified lambda files detected."
+          fi
 
       - name: Terraform Format
         id: fmt
@@ -72,7 +68,8 @@ jobs:
         id: plan
         run: terraform plan -no-color
 
-      - uses: actions/github-script@v6
+      - name: Terraform Plan Comment
+        uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
