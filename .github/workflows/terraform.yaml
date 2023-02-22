@@ -13,9 +13,6 @@ jobs:
       id-token: write
       contents: read
       pull-requests: write
-    defaults:
-      run:
-        working-directory: lambdas
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -27,6 +24,7 @@ jobs:
       - name: Verify Changed Files
         id: verify-changed-files
         run: |
+          ls
           for d in lambdas/*/ ; do
             if git diff --quiet HEAD^ HEAD -- $d; then
               echo "Skipping unchanged lambda $d"
