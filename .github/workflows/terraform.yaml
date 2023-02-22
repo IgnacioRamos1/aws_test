@@ -38,7 +38,7 @@ jobs:
 
       - name: Check branch name
         id: branch-check
-        run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
 
       - name: Verify Changed Files
         uses: tj-actions/verify-changed-files@v13
