@@ -20,7 +20,7 @@ jobs:
         run: echo 'flag2=perro' >> $GITHUB_ENV
       - name: Paso 3
         if: env.flag
-        run: echo "dentro3"
+        run: ${{ env.flag2 == 'adios' }}
       - name: Paso 4
         if: ${{ env.flag2 == 'adios' }}
         run: echo "dentro4"
