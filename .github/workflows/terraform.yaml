@@ -1,8 +1,9 @@
 name: "Terraform"
 
 on:
-  pull_request:
-    branches: [ main, develop ]
+  push:
+    branches:
+      - main
 
 jobs:
   terraform:
@@ -35,23 +36,45 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Check Lambda files
-        run: |
-          if git diff HEAD^ HEAD --name-only | grep -q "^lambdas/.*\.js$"; then
-              echo "Detected modified lambda file. Zipping folder."
-              cd lambdas
-              lambda_file=$(git diff HEAD^ HEAD --name-only | grep "^lambdas/.*\.js$" | head -1)
-              zip_file="${lambda_file%.js}.zip"
-              if [[ -f "../builds/$zip_file" ]]; then
-                  echo "Deleting existing zip file: $zip_file"
-                  rm "../builds/$zip_file"
-              fi
-              zip -r "../builds/$zip_file" .
-              cd ..
-          else
-              echo "No modified lambda files detected."
-          fi
+      - name: Check branch name
+        id: branch-check
+        run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
 
+      - name: Verify Changed Files
+        uses: tj-actions/verify-changed-files@v13
+        id: verify-changed-files
+        with:
+          files: |
+            lambdas/**/*.js
+      # CAMBIAR EL .JS POR .GO
+
+      - name: Zip Lambda
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        run: |
+          # Get the path of the modified file
+          CHANGED_FILE=$(echo "${{ steps.verify-changed-files.outputs.changed_files }}" | head -n 1)
+          # Get the directory of the modified file
+          CHANGED_DIR=$(dirname "${CHANGED_FILE}")
+          # Zip the directory of the modified file
+          cd "${CHANGED_DIR}"
+          zip -r "../${CHANGED_DIR}.zip" .
+          cd ..
+
+      # CAMBIAR LOS NOMBRES DE LOS BUCKETS DE S3
+      - name: Upload to S3
+        uses: jakejarvis/s3-sync-action@v0.5.0
+        with:
+          args: --delete
+          source_dir: ./
+          bucket_url: s3://${
+            if eq(steps.branch-check.outputs.branch, 'main')
+            then 'olgaproduction'
+            else if eq(steps.branch-check.outputs.branch, 'develop')
+            then 'olgadevelop'
+            else error('Invalid branch name')}
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
