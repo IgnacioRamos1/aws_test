@@ -34,7 +34,14 @@ jobs:
               cd ../..            
             fi
           done
-
+      - name: Zip Files
+        if: ${{ env.flag == 'true' }}
+        run: |
+          cd builds
+          for f in *; do
+            zip -r $f.zip $f
+          done
+          cd ..
       - name: Upload Builds Artifact
         if: ${{ env.flag == 'true' }}
         uses: actions/upload-artifact@v2
@@ -58,13 +65,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: builds
-
-      - name: Validate download builds
+      - shell: bash
         run: |
-          ls
-          ls builds/
-          ls builds/ | wc -gt 0;
-          if [ ls builds/ | wc -gt 0 ]; then echo "flag=true" >> $GITHUB_ENV ; fi
+          mv *.zip builds/.
+          echo "flag=true" >> $GITHUB_ENV
 
       - name: Check branch name
         id: branch-check
@@ -73,7 +77,6 @@ jobs:
       - name: Setup AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          # crear rol para olga y trabajar con ese rol
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
