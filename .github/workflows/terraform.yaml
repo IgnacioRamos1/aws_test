@@ -31,7 +31,7 @@ jobs:
               go build -o ../../builds/$(basename $d)
               cd ../..            
             fi
-          echo env.flag || $flag
+          echo "$GITHUB_ENV"
           done
 
       - name: Zip Lambda
