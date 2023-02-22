@@ -61,9 +61,9 @@ jobs:
 
       - name: Validate download builds
         run: |
-        ls builds/
-        ls builds/ | wc -gt 0;
-        if [ ls builds/ | wc -gt 0 ]; then echo "flag=true" >> $GITHUB_ENV ; fi
+          ls builds/
+          ls builds/ | wc -gt 0;
+          if [ ls builds/ | wc -gt 0 ]; then echo "flag=true" >> $GITHUB_ENV ; fi
 
       - name: Check branch name
         id: branch-check
