@@ -43,9 +43,7 @@ jobs:
       - name: Verify Changed Files
         id: verify-changed-files
         run: |
-          echo "Branch name: ${{ env.branch }}"
           changed_files=$(git diff --name-only ${{ env.branch }} HEAD)
-          echo "Changed files: $changed_files"
           if echo "$changed_files" | grep -qE "lambdas/.+\.js$"; then
             echo "files_changed=true" >> $GITHUB_ENV
             changed_files=$(echo "$changed_files" | grep -E "lambdas/.+\.js$")
