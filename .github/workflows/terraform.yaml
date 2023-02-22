@@ -22,7 +22,7 @@ jobs:
         if: env.flag
         run: echo "dentro3"
       - name: Paso 4
-        if: env.flag2 == "adios"
+        if: ${{ env.flag2 == "adios" }}
         run: echo "dentro4"
 
 
