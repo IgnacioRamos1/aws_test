@@ -87,6 +87,13 @@ jobs:
         run: |
           echo "Branch name is $(basename ${{ github.ref }})"
           echo ${{ steps.branch-check.outputs.branch }}
+          if [ $(basename ${{ github.ref }} ) == 'main' ]; then
+            echo "bucket=lambda_builds_production" >> $GITHUB_ENV
+          elif [ $(basename ${{ github.ref }} ) == 'develop' ]; then
+            echo "bucket=lambda_builds_develop" >> $GITHUB_ENV
+          else
+            echo "bucket=Invalid branch name"
+          fi
 
       - name: Upload to S3
         uses: keithweaver/aws-s3-github-action@v1.0.0
@@ -94,11 +101,10 @@ jobs:
         with:
           command: cp
           source: builds/
-          destination: s3://${{ steps.branch-check.outputs.branch == 'main' && 'olgaproduction' || steps.branch-check.outputs.branch == 'develop' && 'olgadevelop' || 'Invalid branch name' }}/builds/
+          destination: s3://${{ env.bucket }}/builds/
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-1
-
 
   terraform:
     name: 'Terraform'
