@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - develop
     paths:
       - lambdas/**
 
@@ -83,14 +84,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Name of branch
+      - name: Bucket Name to Upload Lambdas
         run: |
           echo "Branch name is $(basename ${{ github.ref }})"
           echo ${{ steps.branch-check.outputs.branch }}
           if [ $(basename ${{ github.ref }} ) == 'main' ]; then
-            echo "bucket=lambda_builds_production" >> $GITHUB_ENV
+            echo "bucket=lambda-builds-production" >> $GITHUB_ENV
           elif [ $(basename ${{ github.ref }} ) == 'develop' ]; then
-            echo "bucket=lambda_builds_develop" >> $GITHUB_ENV
+            echo "bucket=lambda-builds-develop" >> $GITHUB_ENV
           else
             echo "bucket=Invalid branch name"
           fi

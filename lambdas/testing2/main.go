@@ -18,3 +18,4 @@ func HandleRequest(ctx context.Context, name MyEvent) (string, error) {
 func main() {
         lambda.Start(HandleRequest)
 }
+
