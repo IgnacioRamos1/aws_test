@@ -85,8 +85,8 @@ jobs:
 
       - name: Name of branch
         run: |
-        echo "Branch name is $(basename ${{ github.ref }})"
-        echo ${{ steps.branch-check.outputs.branch }}
+          echo "Branch name is $(basename ${{ github.ref }})"
+          echo ${{ steps.branch-check.outputs.branch }}
 
       - name: Upload to S3
         uses: keithweaver/aws-s3-github-action@v1.0.0
