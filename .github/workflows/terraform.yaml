@@ -84,8 +84,10 @@ jobs:
           aws-region: us-east-1
 
       - name: Name of branch
-        run: echo ${{ steps.branch-check.outputs.branch }}
-        # CAMBIAR LOS NOMBRES DE LOS BUCKETS DE S3 Y LA REGION
+        run: |
+        echo "Branch name is $(basename ${{ github.ref }})"
+        echo ${{ steps.branch-check.outputs.branch }}
+
       - name: Upload to S3
         uses: keithweaver/aws-s3-github-action@v1.0.0
         if: ${{ env.flag == 'true' }}
@@ -96,6 +98,7 @@ jobs:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-1
+
 
   terraform:
     name: 'Terraform'
