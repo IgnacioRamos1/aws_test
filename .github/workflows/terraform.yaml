@@ -101,7 +101,7 @@ jobs:
         with:
           command: cp
           recursive: true
-          source: builds/
+          source: builds/*
           destination: s3://${{ env.bucket }}/builds/
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
