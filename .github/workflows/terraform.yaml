@@ -99,7 +99,8 @@ jobs:
         uses: keithweaver/aws-s3-github-action@v1.0.0
         if: ${{ env.flag == 'true' }}
         with:
-          command: cp --recursive
+          command: cp
+          recursive: true
           source: builds/
           destination: s3://${{ env.bucket }}/builds/
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
