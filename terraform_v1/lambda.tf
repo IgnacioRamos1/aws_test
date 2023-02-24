@@ -3,24 +3,32 @@ provider "aws" {
 }
 
 resource "aws_lambda_function" "example" {
+  # CAMBIAR NOMBRE FUNCION
   function_name = "ServerlessExample"
 
+  # CAMBIAR NOMBRE DEL BUCKET
   # The bucket name as created earlier with "aws s3api create-bucket"
   s3_bucket = "nachotestserverless"
+  # BUSCAR FORMA DE AUTOMATIZAR ESTO
   s3_key    = "v1.0.0/example.zip"
 
   # "main" is the filename within the zip file (main.js) and "handler"
   # is the name of the property under which the handler function was
   # exported in that file.
+  # HANDLER ES EL NOMBRE DE LA FUNCION A LLAMAR, EN ESTE CASO ES EN MAIN.HANDLER (LA FUNCION SE LLAMA HANDLER)
   handler = "main.handler"
-  runtime = "nodejs16.x"
 
+  # CAMBIAR RUNTIME A GO CUANDO HAGAMOS LA LAMBDA
+  runtime = "nodejs16.x"
+  
+  # EL ROL QUE LE PERMITE A LA LAMBDA REALIZAR LO QUE NECESITE (ESTA ESPECIFICADO MAS ABAJO)
   role = aws_iam_role.lambda_exec.arn
 }
 
 # IAM role which dictates what other AWS services the Lambda function
 # may access.
 resource "aws_iam_role" "lambda_exec" {
+  # CAMBIAR EL NOMBRE A ALGO MAS DESCRIPTIVO
   name = "serverless_example_lambda"
 
   assume_role_policy = <<EOF
@@ -39,6 +47,8 @@ resource "aws_iam_role" "lambda_exec" {
 }
 EOF
 }
+
+# REVISAR SI ESTO ESTA APUNTANDO A UNA LAMBDA EN ESPECIFICO O A TODAS?
 
 resource "aws_api_gateway_resource" "proxy" {
   rest_api_id = aws_api_gateway_rest_api.example.id

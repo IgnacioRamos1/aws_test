@@ -1,6 +1,7 @@
 name: 'Terraform'
 
 on:
+  # Trigger the workflow on push or pull request,
   push:
     branches:
       - main
@@ -38,6 +39,7 @@ jobs:
       - name: Zip Files
         if: ${{ env.flag == 'true' }}
         run: |
+          mkdir -p builds
           cd builds
           for f in *; do
             zip -r $f.zip $f
