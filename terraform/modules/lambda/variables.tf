@@ -14,6 +14,6 @@ variable "filename" {
   type = string
 }
 
-variable "role_arn" {
+variable "role" {
   type = string
 }
