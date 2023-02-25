@@ -4,10 +4,12 @@ variable "function_name" {
 
 variable "handler" {
   type = string
+  default = "main"
 }
 
 variable "runtime" {
   type = string
+  default = "go1.x"
 }
 
 variable "filename" {
@@ -17,3 +19,4 @@ variable "filename" {
 variable "role_arn" {
   type = string
 }
+

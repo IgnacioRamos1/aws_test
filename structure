@@ -1,0 +1,70 @@
+.
+├── README.md
+├── environments
+│   ├── dev
+│   │   ├── dynamodb
+│   │   │   ├── main.tf
+│   │   │   └── variables.tf
+│   │   ├── iam
+│   │   │   ├── main.tf
+│   │   │   └── variables.tf
+│   │   ├── lambdas
+│   │   │   ├── lambda1
+│   │   │   │   ├── main.tf
+│   │   │   │   └── variables.tf
+│   │   │   ├── lambda2
+│   │   │   │   ├── main.tf
+│   │   │   │   └── variables.tf
+│   │   │   └── main.tf
+│   │   ├── s3
+│   │   │   ├── main.tf
+│   │   │   └── variables.tf
+│   │   └── security_groups
+│   │       ├── main.tf
+│   │       └── variables.tf
+│   └── prod
+│       ├── dynamodb
+│       │   ├── main.tf
+│       │   └── variables.tf
+│       ├── iam
+│       │   ├── main.tf
+│       │   └── variables.tf
+│       ├── lambdas
+│       │   ├── lambda1
+│       │   │   ├── main.tf
+│       │   │   └── variables.tf
+│       │   ├── lambda2
+│       │   │   ├── main.tf
+│       │   │   └── variables.tf
+│       │   └── main.tf
+│       ├── s3
+│       │   ├── main.tf
+│       │   └── variables.tf
+│       └── security_groups
+│           ├── main.tf
+│           └── variables.tf
+├── modules
+│   ├── api_gateway
+│   │   ├── main.tf
+│   │   └── variables.tf
+│   ├── dynamodb
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── iam
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── lambda
+│   │   ├── main.tf
+│   │   └── variables.tf
+│   ├── s3_bucket
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   ├── policy.tf
+│   │   └── variables.tf
+│   └── security_group
+│       ├── main.tf
+│       ├── outputs.tf
+│       └── variables.tf
+└── terraform.tfvars
