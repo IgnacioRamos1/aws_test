@@ -6,16 +6,31 @@ data "aws_iam_role" "lambda_exec" {
   name = "lambda-exec-lambda_1"
 }
 
-output "role_arn" {
-  value = data.aws_iam_role.lambda_exec.arn
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = "../../../../../lambdas/testing2/main"
+  output_path = "/tmp/main.zip"
 }
+
+
+data "aws_s3_bucket" "lambda_bucket" {
+  bucket = var.s3_bucket_name
+}
+
+resource "aws_s3_bucket_object" "lambda_zip" {
+  bucket       = data.aws_s3_bucket.lambda_bucket.id
+  key          = "${var.s3_key}/${var.function_name}.zip"
+  source       = data.archive_file.lambda_zip.output_path
+  content_type = "application/zip"
+}
+
 
 module "lambda" {
   source        = "../../../../modules/lambda"
   function_name = "lambda_1"
   handler       = "main"
   runtime       = "go1.x"
-  filename      = "../../../../../lambdas/testing2/main.zip"
+  filename      = data.archive_file.lambda_zip.output_path
   role          = data.aws_iam_role.lambda_exec.arn
 }
 
@@ -48,7 +63,9 @@ resource "aws_api_gateway_integration" "lambda_integration" {
 resource "aws_lambda_permission" "lambda_permission" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = "lambda_1"
+  function_name =  module.lambda.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:sa-east-1:123456789012:${aws_api_gateway_rest_api.lambda_api.id}/*/*"
 }
+
+

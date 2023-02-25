@@ -1,16 +1,12 @@
 variable "bucket_name" {
-  description = "The name of the S3 bucket."
+  description = "Name of the S3 bucket to be created"
   type        = string
-  default     = "olgadevelop"
+  default     = "olga-develop"
 }
 
 variable "region" {
-  description = "The AWS region in which to create the S3 bucket."
+  description = "Region where the S3 bucket will be created"
   type        = string
   default     = "sa-east-1"
 }
 
-variable "access_policy" {
-  description = "The policy that controls access to the S3 bucket."
-  type        = string
-}
