@@ -81,7 +81,7 @@ resource "aws_lambda_permission" "lambda_permission" {
   action        = "lambda:InvokeFunction"
   function_name =  module.lambda.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:sa-east-1:123456789012:${aws_api_gateway_rest_api.lambda_api.execution_arn}/*/*"
+  source_arn    = "${aws_api_gateway_rest_api.lambda_api.execution_arn}/*/*/*"
 }
 
 resource "aws_api_gateway_deployment" "example" {
