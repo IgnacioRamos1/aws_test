@@ -1,3 +1,9 @@
+variable "function_name" {
+  description = "The name of the Lambda function to invoke."
+  type        = string
+  default     = "lambda_1"
+}
+
 variable "http_method" {
   description = "The HTTP method for the API Gateway resource."
   type        = string
@@ -15,6 +21,7 @@ variable "stage_name" {
   type        = string
   default     = "dev"
 }
+
 variable s3_bucket_name {
   description = "The name of the S3 bucket to store the API Gateway resource."
   type        = string
@@ -24,11 +31,5 @@ variable s3_bucket_name {
 variable "s3_key" {
   description = "The name of the S3 key to store the API Gateway resource."
   type        = string
-  default     = "Go Binary"
-}
-
-variable "function_name" {
-  description = "The name of the Lambda function to invoke."
-  type        = string
-  default     = "lambda_1"
+  default     = "Lambda 1 Binary"
 }

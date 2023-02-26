@@ -25,12 +25,14 @@ resource "aws_s3_object" "lambda_zip" {
 
 module "lambda" {
   source        = "../../../modules/lambda"
-  function_name = "lambda_1"
+  function_name = var.function_name
   handler       = "main"
   runtime       = "go1.x"
   filename      = data.archive_file.lambda_zip.output_path
   role          = data.aws_iam_role.lambda_exec.arn
 }
+
+# ----------------- API Gateway -----------------
 
 resource "aws_api_gateway_rest_api" "lambda_api" {
   name = "olga-api"
@@ -39,13 +41,13 @@ resource "aws_api_gateway_rest_api" "lambda_api" {
 resource "aws_api_gateway_resource" "lambda_resource" {
   rest_api_id = aws_api_gateway_rest_api.lambda_api.id
   parent_id   = aws_api_gateway_rest_api.lambda_api.root_resource_id
-  path_part   = "lambda"
+  path_part   = var.endpoint
 }
 
 resource "aws_api_gateway_method" "lambda_method" {
   rest_api_id   = aws_api_gateway_rest_api.lambda_api.id
   resource_id   = aws_api_gateway_resource.lambda_resource.id
-  http_method   = "GET"
+  http_method   = var.http_method
   authorization = "NONE"
 } 
 

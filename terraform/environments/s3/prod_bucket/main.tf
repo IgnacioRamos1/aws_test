@@ -2,12 +2,12 @@ provider "aws" {
   region = "sa-east-1"
 }
 
-resource "aws_s3_bucket" "olga_develop_bucket" {
-  bucket = "olga-develop-bucket"
+resource "aws_s3_bucket" "olga_productionop_bucket" {
+  bucket = "olga-productionop-bucket"
 }
 
-resource "aws_s3_bucket_policy" "olga_develop_bucket_policy" {
-  bucket = aws_s3_bucket.olga_develop_bucket.id
+resource "aws_s3_bucket_policy" "olga_productionop_bucket_policy" {
+  bucket = aws_s3_bucket.olga_productionop_bucket.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -19,7 +19,7 @@ resource "aws_s3_bucket_policy" "olga_develop_bucket_policy" {
           "s3:GetObject"
         ]
         Resource = [
-          "${aws_s3_bucket.olga_develop_bucket.arn}/*"
+          "${aws_s3_bucket.olga_productionop_bucket.arn}/*"
         ]
       }
     ]
