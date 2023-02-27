@@ -10,3 +10,4 @@ inputs = {
   lambda_name = "my-lambda1"
   environment = "lambda1"
 }
+

@@ -7,6 +7,6 @@ include {
 
 # Define input variables specific to the dev_bucket environment
 inputs = {
-  bucket_name = "olga-develop-bucket"
+  bucket_name = "qq08q3ur0q8ufjdc08q3"
   environment = "dev"
 }

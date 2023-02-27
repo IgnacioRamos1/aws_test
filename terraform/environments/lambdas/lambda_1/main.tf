@@ -99,3 +99,7 @@ output "api_url" {
   value = "https://${aws_api_gateway_rest_api.lambda_api.id}.execute-api.sa-east-1.amazonaws.com/dev/lambda"
 }
 
+
+terraform {
+  backend "s3" {}
+}
