@@ -7,7 +7,7 @@ terraform {
 }
 
 resource "aws_s3_bucket" "olga_develop_bucket" {
-  bucket = "olga-develop-bucket"
+  bucket = "olga-develop-bucket-12"
 }
 
 resource "aws_s3_bucket_policy" "olga_develop_bucket_policy" {
