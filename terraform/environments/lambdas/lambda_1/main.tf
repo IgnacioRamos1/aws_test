@@ -2,12 +2,8 @@ provider "aws" {
   region = "sa-east-1"
 }
 
-terraform {
-  backend "s3" {}
-}
-
-module "iam" {
-  source = "../../iam"
+data "aws_iam_role" "lambda_exec" {
+  name = "lambda-exec-test"
 }
 
 data "archive_file" "lambda_zip" {
@@ -33,23 +29,17 @@ module "lambda" {
   handler       = "main"
   runtime       = "go1.x"
   filename      = data.archive_file.lambda_zip.output_path
-  role          = module.lambda.lambda_role
+  role          = data.aws_iam_role.lambda_exec.arn
 }
 
 module "api_gateway" {
-  source    = "../../../modules/api_gateway"
-  endpoint  = var.endpoint
+  source     = "../../../modules/api_gateway"
+  endpoint   = var.endpoint
+  http_method = var.http_method
+  lambda_invoke_arn = module.lambda.invoke_arn
+  function_name = var.function_name
+}
 
-  lambdas = {
-    test = {
-      arn          = module.lambda.invoke_arn
-      http_method  = "GET"
-      resource     = "/test"
-    },
-    hello = {
-      arn          = module.lambda.invoke_arn
-      http_method  = "POST"
-      resource     = "/hello"
-    }
-  }
+output "api_gateway_url" {
+  value = module.api_gateway.api_gateway_url
 }

@@ -14,7 +14,7 @@ resource "aws_api_gateway_integration" "lambda_integration" {
   http_method             = var.http_method
   integration_http_method = "POST"
   type                    = "AWS"
-  uri                     = module.lambda.invoke_arn
+  uri                     = var.lambda_invoke_arn
 }
 
 resource "aws_api_gateway_method" "lambda_method" {
@@ -41,6 +41,7 @@ resource "aws_api_gateway_method_response" "method_response" {
   status_code = "200"
 }
 
+
 resource "aws_api_gateway_deployment" "example" {
   depends_on = [
     aws_api_gateway_integration.lambda_integration,
@@ -54,7 +55,11 @@ resource "aws_api_gateway_deployment" "example" {
 resource "aws_lambda_permission" "lambda_permission" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = module.lambda.function_name
+  function_name = var.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.lambda_api.execution_arn}/*/${aws_api_gateway_rest_api.lambda_api.id}/*"
+  source_arn    = "${aws_api_gateway_rest_api.lambda_api.execution_arn}/*/*/*"
+}
+
+output "api_gateway_url" {
+  value = aws_api_gateway_deployment.example.invoke_url
 }

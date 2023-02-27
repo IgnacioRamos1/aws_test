@@ -7,7 +7,7 @@ resource "aws_lambda_function" "lambda_function" {
 }
 
 data "aws_iam_role" "lambda_exec" {
-  name = "lambda-exec"
+  name = "lambda-exec-test"
 }
 
 output "invoke_arn" {
