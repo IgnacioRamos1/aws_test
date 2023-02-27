@@ -5,8 +5,9 @@ include {
   path = "${find_in_parent_folders()}"
 }
 
-# Define input variables specific to the lambda1 environment
-inputs = {
-  lambda_name = "my-lambda1"
-  environment = "lambda1"
+dependencies {
+  paths = [
+    "../../s3/dev_bucket",
+    "../../s3/prod_bucket",
+  ]
 }

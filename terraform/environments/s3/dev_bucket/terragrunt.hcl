@@ -5,8 +5,8 @@ include {
   path = "${find_in_parent_folders()}"
 }
 
-# Define input variables specific to the dev_bucket environment
-inputs = {
-  bucket_name = "olga-develop-bucket"
-  environment = "dev"
+dependencies {
+  paths = [
+    "../../iam",
+  ]
 }

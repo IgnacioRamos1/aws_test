@@ -2,12 +2,16 @@ provider "aws" {
   region = "sa-east-1"
 }
 
-resource "aws_s3_bucket" "olga_productionop_bucket" {
-  bucket = "olga-productionop-bucket"
+terraform {
+  backend "s3" {}
 }
 
-resource "aws_s3_bucket_policy" "olga_productionop_bucket_policy" {
-  bucket = aws_s3_bucket.olga_productionop_bucket.id
+resource "aws_s3_bucket" "olga_production_bucket" {
+  bucket = "olga-production-bucket"
+}
+
+resource "aws_s3_bucket_policy" "olga_production_bucket_policy" {
+  bucket = aws_s3_bucket.olga_production_bucket.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -19,7 +23,7 @@ resource "aws_s3_bucket_policy" "olga_productionop_bucket_policy" {
           "s3:GetObject"
         ]
         Resource = [
-          "${aws_s3_bucket.olga_productionop_bucket.arn}/*"
+          "${aws_s3_bucket.olga_production_bucket.arn}/*"
         ]
       }
     ]

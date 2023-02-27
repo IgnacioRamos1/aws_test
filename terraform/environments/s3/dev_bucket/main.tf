@@ -2,6 +2,10 @@ provider "aws" {
   region = "sa-east-1"
 }
 
+terraform {
+  backend "s3" {}
+}
+
 resource "aws_s3_bucket" "olga_develop_bucket" {
   bucket = "olga-develop-bucket"
 }
