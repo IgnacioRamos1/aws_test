@@ -25,7 +25,7 @@ variable "stage_name" {
 variable s3_bucket_name {
   description = "The name of the S3 bucket to store the API Gateway resource."
   type        = string
-  default     = "olga-develop-bucket"
+  default     = "qq08q3ur0q8ufjdc08q3"
 }
 
 variable "s3_key" {

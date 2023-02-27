@@ -7,7 +7,7 @@ terraform {
 }
 
 resource "aws_s3_bucket" "olga_develop_bucket" {
-  bucket = "olga-develop-bucket"
+  bucket = "qq08q3ur0q8ufjdc08q3"
 }
 
 resource "aws_s3_bucket_policy" "olga_develop_bucket_policy" {
@@ -28,4 +28,8 @@ resource "aws_s3_bucket_policy" "olga_develop_bucket_policy" {
       }
     ]
   })
+}
+
+terraform {
+  backend "s3" {}
 }
