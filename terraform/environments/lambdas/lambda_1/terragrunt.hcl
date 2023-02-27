@@ -7,7 +7,7 @@ include {
 
 dependencies {
   paths = [
-    "../../s3/dev_bucket",
     "../../s3/prod_bucket",
+    "../../s3/dev_bucket",
   ]
 }

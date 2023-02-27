@@ -6,8 +6,8 @@ terraform {
   backend "s3" {}
 }
 
-data "aws_iam_role" "lambda_exec" {
-  name = "lambda-exec"
+module "iam" {
+  source = "../../iam"
 }
 
 data "archive_file" "lambda_zip" {
@@ -33,7 +33,7 @@ module "lambda" {
   handler       = "main"
   runtime       = "go1.x"
   filename      = data.archive_file.lambda_zip.output_path
-  role          = data.aws_iam_role.lambda_exec.arn
+  role          = module.iam.name
 }
 
 # ----------------- API Gateway -----------------
@@ -101,9 +101,4 @@ resource "aws_api_gateway_deployment" "example" {
 
 output "api_url" {
   value = "https://${aws_api_gateway_rest_api.lambda_api.id}.execute-api.sa-east-1.amazonaws.com/dev/lambda"
-}
-
-
-terraform {
-  backend "s3" {}
 }

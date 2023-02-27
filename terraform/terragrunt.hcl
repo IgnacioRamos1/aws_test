@@ -4,7 +4,7 @@
 remote_state {
   backend = "s3"
   config = {
-    bucket = "qq08q3ur0q8ufjdc08q3"
+    bucket = "olga-terragrunt"
     key    = "terraform.tfstate"
     region = "sa-east-1"
   }
